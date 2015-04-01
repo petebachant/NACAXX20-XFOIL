@@ -13,7 +13,7 @@ plt.style.use("ggplot")
 Re_list = [8e4, 1.1e5, 1.3e5, 1.6e5, 1.9e5, 2.1e5, 2.4e5, 2.7e5, 2.9e5, 3.2e5,
            3.4e5]
 
-def load(Re, foil="4520"):
+def load(Re, foil="0020"):
     """Loads airfoil data for a given Reynolds number."""
     fname = "NACA {}_T1_Re{:.3f}_M0.00_N9.0.dat".format(foil, Re/1e6)
     fpath = "data/{}/{}".format(foil, fname)
@@ -90,9 +90,32 @@ def plot_aoa_max_cl_cd():
     plt.ylabel(r"$\alpha_{C_l/C_d, \mathrm{max}}$")
 #    plt.ylim((6,10))
     
+def plot_ct(Re, foil="0020", newfig=True):
+    """Plots tangential coefficient for a given Reynolds number."""
+    if newfig:
+        plt.figure()
+    df = load(Re, foil)
+    aoa_rad = df.aoa*np.pi/180
+    ct = np.sqrt(df.cl**2 + df.cd**2)*np.sin(aoa_rad - np.arctan2(df.cd,df.cl))
+    # Equivalent expression below!
+    # ct = df.cl*np.sin(aoa_rad) - df.cd*np.cos(aoa_rad)
+    plt.plot(df.aoa, ct)
+    plt.xlabel("Angle of attack (deg)")
+    plt.ylabel("$C_T$")
+    
+def plot_ct_all(foil="0020"):
+    plt.figure()
+    for Re in Re_list:
+        plot_ct(Re, foil, newfig=False)
+    plt.xlim((0,30))
+    
 if __name__ == "__main__":
-    plot_cl_cd_all()
-    plot_max_cl()
-    plot_min_cd()
-    plot_max_cl_cd()
-    plot_aoa_max_cl_cd()
+#    plot_cl_cd_all()
+#    plot_max_cl()
+#    plot_min_cd()
+#    plot_max_cl_cd()
+#    plot_aoa_max_cl_cd()
+#    plot_ct(1.1e5)
+#    plot_cl_cd(1.1e5)
+    plot_ct_all("0020")
+    plot_ct_all("4520")
