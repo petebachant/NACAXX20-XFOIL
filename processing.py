@@ -19,10 +19,10 @@ def load(Re, foil="0020"):
     fname = "NACA {}_T1_Re{:.3f}_M0.00_N9.0.dat".format(foil, Re/1e6)
     fpath = "data/{}/{}".format(foil, fname)
     aoa, cl, cd = np.loadtxt(fpath, skiprows=14, unpack=True)
-    if foil == "0020":
-        aoa = np.append([0], aoa[:-1])
-        cl = np.append([0], cl[:-1])
-        cd = np.append(cd[0], cd[:-1])
+    if aoa[0] != 0.0:
+        aoa = np.append([0.0], aoa[:-1])
+        cl = np.append([0.0], cl[:-1])
+        cd = np.append(cd[0.0], cd[:-1])
     df = pd.DataFrame()
     df["aoa"] = aoa
     df["cl"] = cl
@@ -44,30 +44,30 @@ def plot_cl_cd_all(foil="0020"):
         plot_cl_cd(Re, foil, newfig=False)
     plt.xlim((0,30))
         
-def plot_max_cl():
+def plot_max_cl(foil="0020"):
     max_cl = []
     for Re in Re_list:
-        max_cl.append(load(Re)["cl"].max())
+        max_cl.append(load(Re, foil=foil)["cl"].max())
     plt.figure()
     plt.plot(Re_list, max_cl, "-o")
     plt.xlabel("$Re_c$")
     plt.ylabel(r"$C_{l, \mathrm{max}}$")
 #    plt.ylim((1.1,1.22))
     
-def plot_min_cd():
+def plot_min_cd(foil="0020"):
     min_cd = []
     for Re in Re_list:
-        min_cd.append(load(Re)["cd"].min())
+        min_cd.append(load(Re, foil=foil)["cd"].min())
     plt.figure()
     plt.plot(Re_list, min_cd, "-o")
     plt.xlabel("$Re_c$")
     plt.ylabel(r"$C_{d, \mathrm{min}}$")
 #    plt.ylim((0.005,0.03))
     
-def plot_max_cl_cd():
+def plot_max_cl_cd(foil="0020"):
     vals = []
     for Re in Re_list:
-        df = load(Re)
+        df = load(Re, foil=foil)
         vals.append(np.max(df.cl/df.cd))
     plt.figure()
     plt.plot(Re_list, vals, "-o")
@@ -151,14 +151,27 @@ def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
         df = calc_cft_ctorque(Re, tsr, chord, R, foil)
         max_ctorque.append(df.ctorque.max())
         min_ctorque.append(df.ctorque.min())
-    plt.figure()
-    plt.plot(Re_list, max_ctorque, "k")
+    return max_ctorque
+        
+def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
+                    fmt="-ok"):
+    max_ctorque = calc_cft_re_dep(tsr, chord, R, foil)
+    if newfig:
+        plt.figure()
+    plt.plot(Re_list, max_ctorque, fmt, label="NACA {}".format(foil))
     plt.grid()
     ax = plt.gca()
     ax.xaxis.major.formatter.set_powerlimits((0,0))
     plt.xlabel(r"$Re_c$")
     plt.ylabel(r"Max geometric torque coeff.")
     plt.tight_layout()
+    
+def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5):
+    plt.figure()
+    for foil, fmt in zip(["0020", "2520", "4520"], ["-ok", "-sk", "-^k"]):
+        plot_cft_re_dep(tsr=tsr, chord=chord, R=R, foil=foil, newfig=False,
+                        fmt=fmt)
+    plt.legend(loc="best")
     
 def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     df = calc_cft_ctorque(Re, tsr, chord, R, foil)
@@ -175,14 +188,16 @@ def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     plt.show()
     
 if __name__ == "__main__":
+    foil = "2520"
 #    plot_cl_cd_all("4520")
-#    plot_max_cl()
-#    plot_min_cd()
-#    plot_max_cl_cd()
+    plot_max_cl(foil)
+    plot_min_cd(foil)
+    plot_max_cl_cd(foil)
 #    plot_aoa_max_cl_cd()
 #    plot_ct(1.1e5)
 #    plot_cl_cd(1.1e5)
 #    plot_ct_all("4520")
 #    plot_ct_all("4520")
-    plot_cft_ctorque(2.1e5, foil="0020")
-    calc_cft_re_dep(foil="0020")
+    plot_cft_ctorque(1.1e5, foil=foil)
+#    plot_cft_re_dep(foil=foil)
+    plot_cft_re_dep_all()
