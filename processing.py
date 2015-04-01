@@ -27,19 +27,19 @@ def load(Re, foil="0020"):
     df["cd"] = cd
     return df
     
-def plot_cl_cd(Re, newfig=True):
+def plot_cl_cd(Re, foil="0020", newfig=True):
     """Plots lift over drag ratio for a given Reynolds number."""
     if newfig:
         plt.figure()
-    df = load(Re)
+    df = load(Re, foil)
     plt.plot(df.aoa, df.cl/df.cd)
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_L/C_D$")
     
-def plot_cl_cd_all():
+def plot_cl_cd_all(foil="0020"):
     plt.figure()
     for Re in Re_list:
-        plot_cl_cd(Re, newfig=False)
+        plot_cl_cd(Re, foil, newfig=False)
     plt.xlim((0,30))
         
 def plot_max_cl():
@@ -110,7 +110,7 @@ def plot_ct_all(foil="0020"):
     plt.xlim((0,30))
     
 if __name__ == "__main__":
-#    plot_cl_cd_all()
+    plot_cl_cd_all("4520")
 #    plot_max_cl()
 #    plot_min_cd()
 #    plot_max_cl_cd()
