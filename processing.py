@@ -8,8 +8,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+import seaborn as sns
 
-plt.style.use("arial")
+sns.set(style="white", context="paper", font_scale=1.75,
+        rc={"lines.markersize": 9, "lines.markeredgewidth": 1.25,
+            "axes.formatter.limits": (-5, 5),
+            "legend.fontsize": "small", "font.size": 14})
 
 Re_list = [8e4, 1.1e5, 1.3e5, 1.6e5, 1.9e5, 2.1e5, 2.4e5, 2.7e5, 2.9e5, 3.2e5,
            3.4e5]
@@ -136,34 +140,44 @@ def calc_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     relvel_dot_bladevel = (blade_vel_x*rel_vel_x + blade_vel_y*rel_vel_y)
     alpha_rad = np.arccos(relvel_dot_bladevel/(rel_vel_mag*blade_vel_mag))
     alpha_deg = alpha_rad*180/np.pi
-    ctorque = lookup(alpha_deg, Re, foil)["ct"]*chord/(2*R)*rel_vel_mag**2/U_infty**2
+    foil_coeffs = lookup(alpha_deg, Re, foil)
+    ctorque = foil_coeffs["ct"]*chord/(2*R)*rel_vel_mag**2/U_infty**2
+    cdx = -foil_coeffs["cd"]*np.sin(np.pi/2 - alpha_rad + theta_blade_rad)
+    clx = foil_coeffs["cl"]*np.cos(np.pi/2 - alpha_rad - theta_blade_rad)
     df = pd.DataFrame()
     df["theta"] = theta_blade_deg
     df["alpha_deg"] = alpha_deg
     df["rel_vel_mag"] = rel_vel_mag
     df["ctorque"] = ctorque
+    df["cdrag"] = clx + cdx
     return df
     
 def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     max_ctorque = []
     min_ctorque = []
+    max_cdrag = []
     for Re in Re_list:
         df = calc_cft_ctorque(Re, tsr, chord, R, foil)
         max_ctorque.append(df.ctorque.max())
         min_ctorque.append(df.ctorque.min())
-    return max_ctorque
+        max_cdrag.append(df.cdrag.max())
+    return {"max_ctorque": np.asarray(max_ctorque), 
+            "max_cdrag": np.asarray(max_cdrag)}
         
 def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
                     fmt="-ok"):
-    max_ctorque = calc_cft_re_dep(tsr, chord, R, foil)
+    d = calc_cft_re_dep(tsr, chord, R, foil)
+    max_ctorque = d["max_ctorque"]
+    max_cdrag = d["max_cdrag"]
     if newfig:
         plt.figure()
-    plt.plot(Re_list, max_ctorque, fmt, label="NACA {}".format(foil))
-    plt.grid()
+    plt.plot(Re_list, max_ctorque/max_ctorque[5], fmt, 
+             label="NACA {}".format(foil), markerfacecolor="none")
+    plt.grid(True)
     ax = plt.gca()
     ax.xaxis.major.formatter.set_powerlimits((0,0))
     plt.xlabel(r"$Re_c$")
-    plt.ylabel(r"Max geometric torque coeff.")
+    plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
     plt.tight_layout()
     
 def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5):
@@ -181,19 +195,19 @@ def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     plt.xlabel("Azimuthal angle (degrees)")
     plt.ylabel("Angle of attack (degrees)")
     plt.xticks(np.arange(0, 181, 30))
-    plt.grid()
+    plt.grid(True)
     plt.subplot(1, 3, 2)
     plt.plot(df.theta, df.rel_vel_mag**2, "k")
     plt.xlabel("Azimuthal angle (degrees)")
     plt.ylabel(r"$|U_{\mathrm{rel}}|^2/U_\infty^2$")
     plt.xticks(np.arange(0, 181, 30))
-    plt.grid()
+    plt.grid(True)
     plt.subplot(1, 3, 3)
     plt.plot(df.theta, df.ctorque, "k")
     plt.xlabel("Azimuthal angle (degrees)")
     plt.ylabel("Torque coefficient")
     plt.xticks(np.arange(0, 181, 30))
-    plt.grid()
+    plt.grid(True)
     plt.tight_layout(pad=0.2)
     plt.show()
     
