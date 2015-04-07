@@ -180,9 +180,11 @@ def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
     plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
     plt.tight_layout()
     
-def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5):
+def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5, RVAT=True):
     plt.figure()
-    for foil, fmt in zip(["0020", "2520", "4520"], ["-ok", "-sk", "-^k"]):
+    if RVAT:
+        plot_rvat_re_dep()
+    for foil, fmt in zip(["0020", "2520", "4520"], ["-vk", "-sk", "-^k"]):
         plot_cft_re_dep(tsr=tsr, chord=chord, R=R, foil=foil, newfig=False,
                         fmt=fmt)
     plt.legend(loc="best")
@@ -210,6 +212,16 @@ def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     plt.grid(True)
     plt.tight_layout(pad=0.2)
     plt.show()
+    
+def plot_rvat_re_dep(newfig=False, normalize=True):
+    if newfig:
+        plt.figure()
+    fp = "C:/Users/Pete/Research/Experiments/RVAT Re dep/Data/Processed/Perf-tsr_0.csv"
+    df = pd.read_csv(fp)
+    cp = df.mean_cp
+    if normalize:
+        cp /= cp[5]
+    plt.plot(df.Re_c_ave, cp, "-ok", label="UNH-RVAT exp.", markerfacecolor="none")
     
 if __name__ == "__main__":
     foil = "2520"
