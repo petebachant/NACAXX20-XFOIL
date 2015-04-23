@@ -195,6 +195,25 @@ def calc_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     df["cdrag"] = clx + cdx
     return df
     
+def calc_aft_ctorque(Re, foil="0020"):
+    """
+    Calculates the approximate torque coefficient for an AFT blade.
+    """
+    alpha = np.linspace(0, 20, num=81)
+    pitch = np.linspace(-90, 90, num=361)
+    alpha_rad = alpha*np.pi/180.0
+    pitch_rad = pitch*np.pi/180.0
+    ctorque = np.zeros((len(alpha), len(pitch)))
+    for n, ai in enumerate(alpha_rad):
+        coeffs = lookup(ai/np.pi*180.0, Re, foil=foil)
+        ctorque[n, :] = coeffs["cl"]*np.sin(ai + pitch_rad) \
+                      - coeffs["cd"]*np.cos(ai + pitch_rad)
+    # df = pd.DataFrame(data=ctorque, index=alpha, columns=pitch)
+    ind = np.where(ctorque==ctorque.max())
+    i, j = ind[0][0], ind[1][0]
+    print(alpha[i], pitch[j])
+    return ctorque.max()
+    
 def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     max_ctorque = []
     min_ctorque = []
@@ -206,6 +225,12 @@ def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
         max_cdrag.append(df.cdrag.max())
     return {"max_ctorque": np.asarray(max_ctorque), 
             "max_cdrag": np.asarray(max_cdrag)}
+
+def calc_aft_re_dep(foil="0020"):
+    ctorque = []
+    for Re in Re_list:
+        ctorque.append(calc_aft_ctorque(Re, foil))
+    return np.asarray(ctorque)
         
 def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
                     fmt="-ok"):
@@ -219,6 +244,17 @@ def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
     plt.grid(True)
     ax = plt.gca()
     ax.xaxis.major.formatter.set_powerlimits((0,0))
+    plt.xlabel(r"$Re_c$")
+    plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
+    plt.tight_layout()
+    
+def plot_aft_re_dep(foil="0020", fmt="-ok", newfig=True):
+    ct = calc_aft_re_dep(foil)
+    if newfig:
+        plt.figure()
+    plt.plot(Re_list, ct/ct[5], fmt, label="NACA {}".format(foil), 
+             markerfacecolor="none")
+    plt.grid(True)
     plt.xlabel(r"$Re_c$")
     plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
     plt.tight_layout()
@@ -301,10 +337,11 @@ if __name__ == "__main__":
 #    plot_ct(1.1e5)
 #    plot_cl_cd(1.1e5)
 #    plot_ct_all("4520")
-    plot_cft_ctorque(2.1e5, foil=foil, save=save)
+#    plot_cft_ctorque(2.1e5, foil=foil, save=save)
 #    plot_cft_re_dep(foil=foil)
-    plot_cft_re_dep_all(save=save)
+#    plot_cft_re_dep_all(save=save)
 #    plot_min_cd_all()
 #    plot_max_cl_all()
 #    plot_max_cl_cd_all()
-    plot_all_foils_re_dep(save=save)
+#    plot_all_foils_re_dep(save=save)
+    plot_aft_re_dep()
