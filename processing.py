@@ -41,7 +41,7 @@ def plot_cl(Re, foil="0020", newfig=True):
     if newfig:
         plt.figure()
     df = load(Re, foil)
-    plt.plot(df.aoa, df.cl)
+    plt.plot(df.aoa, df.cl, label="{:.1e}".format(Re))
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_l$")
     
@@ -367,7 +367,9 @@ if __name__ == "__main__":
         os.mkdir("figures")
     foil = "0020"
     save = True
-#    plot_cl_cd_all("4520")
+    plot_cl_all(foil)
+    plt.legend()
+    plot_cd_all(foil)
 #    plot_max_cl(foil)
 #    plot_min_cd(foil)
 #    plot_max_cl_cd(foil)
@@ -382,4 +384,4 @@ if __name__ == "__main__":
 #    plot_max_cl_all()
 #    plot_max_cl_cd_all()
 #    plot_all_foils_re_dep(save=save)
-    plot_aft_re_dep()
+#    plot_aft_re_dep()
