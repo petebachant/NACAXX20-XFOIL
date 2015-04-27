@@ -34,14 +34,50 @@ def load(Re, foil="0020"):
     df["cd"] = cd
     return df
     
+def plot_cl(Re, foil="0020", newfig=True):
+    """
+    Plot lift coefficient for a given Reynolds number and profile.
+    """
+    if newfig:
+        plt.figure()
+    df = load(Re, foil)
+    plt.plot(df.aoa, df.cl)
+    plt.xlabel("Angle of attack (deg)")
+    plt.ylabel("$C_l$")
+    
+def plot_cl_all(foil="0020"):
+    plt.figure()
+    for Re in Re_list:
+        plot_cl(Re, foil, newfig=False)
+    plt.xlim((0,30))
+    
+def plot_cd(Re, foil="0020", newfig=True):
+    """
+    Plot drag coefficient for a given Reynolds number and profile.
+    """
+    if newfig:
+        plt.figure()
+    df = load(Re, foil)
+    plt.plot(df.aoa, df.cd)
+    plt.xlabel("Angle of attack (deg)")
+    plt.ylabel("$C_d$")
+    
+def plot_cd_all(foil="0020"):
+    plt.figure()
+    for Re in Re_list:
+        plot_cd(Re, foil, newfig=False)
+    plt.xlim((0,30))
+    
 def plot_cl_cd(Re, foil="0020", newfig=True):
-    """Plots lift over drag ratio for a given Reynolds number."""
+    """
+    Plot lift over drag ratio for a given Reynolds number.
+    """
     if newfig:
         plt.figure()
     df = load(Re, foil)
     plt.plot(df.aoa, df.cl/df.cd)
     plt.xlabel("Angle of attack (deg)")
-    plt.ylabel("$C_L/C_D$")
+    plt.ylabel("$C_l/C_d$")
     
 def plot_cl_cd_all(foil="0020"):
     plt.figure()
