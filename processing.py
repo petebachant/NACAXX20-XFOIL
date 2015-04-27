@@ -199,19 +199,21 @@ def calc_aft_ctorque(Re, foil="0020"):
     """
     Calculates the approximate torque coefficient for an AFT blade.
     """
-    alpha = np.linspace(0, 20, num=81)
+    alpha = np.linspace(0, 22, num=100)
     pitch = np.linspace(-90, 90, num=361)
     alpha_rad = alpha*np.pi/180.0
     pitch_rad = pitch*np.pi/180.0
     ctorque = np.zeros((len(alpha), len(pitch)))
     for n, ai in enumerate(alpha_rad):
         coeffs = lookup(ai/np.pi*180.0, Re, foil=foil)
-        ctorque[n, :] = coeffs["cl"]*np.sin(ai + pitch_rad) \
-                      - coeffs["cd"]*np.cos(ai + pitch_rad)
+        ctorque[n, :] = coeffs["cl"]*np.sin(pitch_rad + ai) \
+                      - coeffs["cd"]*np.cos(pitch_rad + ai)
     # df = pd.DataFrame(data=ctorque, index=alpha, columns=pitch)
     ind = np.where(ctorque==ctorque.max())
     i, j = ind[0][0], ind[1][0]
     print(alpha[i], pitch[j])
+    tsr = 1/np.tan(alpha_rad[i] + pitch_rad[j])
+#    print(tsr)
     return ctorque.max()
     
 def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
