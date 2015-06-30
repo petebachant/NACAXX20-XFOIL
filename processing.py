@@ -8,13 +8,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
-import seaborn as sns
+from pxl.styleplot import set_sns
 import os
 
-sns.set(style="white", context="paper", font_scale=1.75,
-        rc={"lines.markersize": 9, "lines.markeredgewidth": 1.25,
-            "axes.formatter.limits": (-5, 5),
-            "legend.fontsize": "small", "font.size": 14})
+set_sns()
 
 Re_list = [8e4, 1.1e5, 1.3e5, 1.6e5, 1.9e5, 2.1e5, 2.4e5, 2.7e5, 2.9e5, 3.2e5,
            3.4e5]
