@@ -344,16 +344,13 @@ def plot_rvat_re_dep(newfig=False, normalize=True):
     plt.plot(df.Re_c_ave, cp, "-ok", label="UNH-RVAT exp.", markerfacecolor="none")
     
 def plot_all_foils_re_dep(save=False):
-    plt.figure(figsize=(11,3.25))
+    plt.figure(figsize=(7.5, 3))
     plt.subplot(1, 3, 1)
     plot_max_cl_all(newfig=False)
-    plt.title("(a)")
     plt.subplot(1, 3, 2)
     plot_min_cd_all(newfig=False)
-    plt.title("(b)")
     plt.subplot(1, 3, 3)
     plot_max_cl_cd_all(newfig=False)
-    plt.title("(c)")
     plt.tight_layout(pad=0.2)
     if save:
         plt.savefig("figures/all_foils_re_dep.pdf")
@@ -364,9 +361,9 @@ if __name__ == "__main__":
         os.mkdir("figures")
     foil = "0020"
     save = True
-    plot_cl_all(foil)
-    plt.legend()
-    plot_cd_all(foil)
+#    plot_cl_all(foil)
+#    plt.legend()
+#    plot_cd_all(foil)
 #    plot_max_cl(foil)
 #    plot_min_cd(foil)
 #    plot_max_cl_cd(foil)
@@ -380,5 +377,5 @@ if __name__ == "__main__":
 #    plot_min_cd_all()
 #    plot_max_cl_all()
 #    plot_max_cl_cd_all()
-#    plot_all_foils_re_dep(save=save)
+    plot_all_foils_re_dep(save=save)
 #    plot_aft_re_dep()
