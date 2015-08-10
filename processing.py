@@ -379,3 +379,4 @@ if __name__ == "__main__":
 #    plot_max_cl_cd_all()
     plot_all_foils_re_dep(save=save)
 #    plot_aft_re_dep()
+    plt.show()
