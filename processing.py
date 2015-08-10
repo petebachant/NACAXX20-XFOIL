@@ -30,7 +30,7 @@ def load(Re, foil="0020"):
     df["cl"] = cl
     df["cd"] = cd
     return df
-    
+
 def plot_cl(Re, foil="0020", newfig=True):
     """
     Plot lift coefficient for a given Reynolds number and profile.
@@ -41,13 +41,13 @@ def plot_cl(Re, foil="0020", newfig=True):
     plt.plot(df.aoa, df.cl, label="{:.1e}".format(Re))
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_l$")
-    
+
 def plot_cl_all(foil="0020"):
     plt.figure()
     for Re in Re_list:
         plot_cl(Re, foil, newfig=False)
     plt.xlim((0,30))
-    
+
 def plot_cd(Re, foil="0020", newfig=True):
     """
     Plot drag coefficient for a given Reynolds number and profile.
@@ -58,13 +58,13 @@ def plot_cd(Re, foil="0020", newfig=True):
     plt.plot(df.aoa, df.cd)
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_d$")
-    
+
 def plot_cd_all(foil="0020"):
     plt.figure()
     for Re in Re_list:
         plot_cd(Re, foil, newfig=False)
     plt.xlim((0,30))
-    
+
 def plot_cl_cd(Re, foil="0020", newfig=True):
     """
     Plot lift over drag ratio for a given Reynolds number.
@@ -75,13 +75,13 @@ def plot_cl_cd(Re, foil="0020", newfig=True):
     plt.plot(df.aoa, df.cl/df.cd)
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_l/C_d$")
-    
+
 def plot_cl_cd_all(foil="0020"):
     plt.figure()
     for Re in Re_list:
         plot_cl_cd(Re, foil, newfig=False)
     plt.xlim((0,30))
-        
+
 def plot_max_cl(foil="0020", fmt="-o", normalize=False, newfig=True):
     max_cl = []
     ylab = r"$C_{l, \mathrm{max}}$"
@@ -97,16 +97,17 @@ def plot_max_cl(foil="0020", fmt="-o", normalize=False, newfig=True):
     plt.grid(True)
     plt.xlabel("$Re_c$")
     plt.ylabel(ylab)
-    
-def plot_max_cl_all(save=False, newfig=True):
+
+def plot_max_cl_all(save=False, newfig=True, legend=True):
     if newfig:
         plt.figure()
     for foil, fmt in zip(["0020", "2520", "4520"], ["-vk", "-sk", "-^k"]):
         plot_max_cl(foil=foil, fmt=fmt, newfig=False, normalize=True)
-    plt.legend(loc="best")
+    if legend:
+        plt.legend(loc="best")
     if save:
         plt.savefig("figures/foils_max_cl.pdf")
-    
+
 def plot_min_cd(foil="0020", fmt="-o", newfig=True, normalize=False):
     ylab = r"$C_{d, \mathrm{min}}$"
     min_cd = []
@@ -122,16 +123,17 @@ def plot_min_cd(foil="0020", fmt="-o", newfig=True, normalize=False):
     plt.xlabel("$Re_c$")
     plt.ylabel(ylab)
     plt.grid(True)
-    
-def plot_min_cd_all(save=False, newfig=True):
+
+def plot_min_cd_all(save=False, newfig=True, legend=True):
     if newfig:
         plt.figure()
     for foil, fmt in zip(["0020", "2520", "4520"], ["-vk", "-sk", "-^k"]):
         plot_min_cd(foil=foil, fmt=fmt, newfig=False, normalize=True)
-    plt.legend(loc="best")
+    if legend:
+        plt.legend(loc="best")
     if save:
         plt.savefig("figures/foils_min_cd.pdf")
-    
+
 def plot_max_cl_cd(foil="0020", fmt="-o", newfig=True, normalize=False):
     ylab = r"$(C_l/C_d)_\mathrm{max}$"
     vals = []
@@ -149,16 +151,17 @@ def plot_max_cl_cd(foil="0020", fmt="-o", newfig=True, normalize=False):
     plt.ylabel(ylab)
     plt.grid(True)
     plt.tight_layout()
-    
-def plot_max_cl_cd_all(save=False, newfig=True):
+
+def plot_max_cl_cd_all(save=False, newfig=True, legend=True):
     if newfig:
         plt.figure()
     for foil, fmt in zip(["0020", "2520", "4520"], ["-vk", "-sk", "-^k"]):
         plot_max_cl_cd(foil=foil, fmt=fmt, newfig=False, normalize=True)
-    plt.legend(loc="best")
+    if legend:
+        plt.legend(loc="best")
     if save:
         plt.savefig("figures/foils_max_cl_cd.pdf")
-    
+
 def plot_aoa_max_cl_cd():
     """Plots angle of attack at which max C_l/C_d occurs."""
     vals = []
@@ -171,7 +174,7 @@ def plot_aoa_max_cl_cd():
     plt.plot(Re_list, vals, "-o")
     plt.xlabel("$Re_c$")
     plt.ylabel(r"$\alpha_{C_l/C_d, \mathrm{max}}$")
-    
+
 def plot_ct(Re, foil="0020", newfig=True):
     """Plots tangential coefficient for a given Reynolds number."""
     if newfig:
@@ -184,13 +187,13 @@ def plot_ct(Re, foil="0020", newfig=True):
     plt.plot(df.aoa, ct)
     plt.xlabel("Angle of attack (deg)")
     plt.ylabel("$C_T$")
-    
+
 def plot_ct_all(foil="0020"):
     plt.figure()
     for Re in Re_list:
         plot_ct(Re, foil, newfig=False)
     plt.xlim((0,30))
-    
+
 def lookup(aoa_deg, Re, foil="0020"):
     aoa_deg = np.asarray(aoa_deg)
     df = load(Re, foil)
@@ -200,7 +203,7 @@ def lookup(aoa_deg, Re, foil="0020"):
     f_ct = interp1d(df.aoa, df.cl*np.sin(df.aoa_rad) - df.cd*np.cos(df.aoa_rad))
     cl, cd, ct = f_cl(aoa_deg), f_cd(aoa_deg), f_ct(aoa_deg)
     return {"cl": cl, "cd": cd, "ct": ct}
-    
+
 def calc_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     U_infty = 1.0
     omega = tsr*U_infty/R
@@ -227,7 +230,7 @@ def calc_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     df["ctorque"] = ctorque
     df["cdrag"] = clx + cdx
     return df
-    
+
 def calc_aft_ctorque(Re, foil="0020"):
     """
     Calculates the approximate torque coefficient for an AFT blade.
@@ -248,7 +251,7 @@ def calc_aft_ctorque(Re, foil="0020"):
     tsr = 1/np.tan(alpha_rad[i] + pitch_rad[j])
 #    print(tsr)
     return ctorque.max()
-    
+
 def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
     max_ctorque = []
     min_ctorque = []
@@ -258,7 +261,7 @@ def calc_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020"):
         max_ctorque.append(df.ctorque.max())
         min_ctorque.append(df.ctorque.min())
         max_cdrag.append(df.cdrag.max())
-    return {"max_ctorque": np.asarray(max_ctorque), 
+    return {"max_ctorque": np.asarray(max_ctorque),
             "max_cdrag": np.asarray(max_cdrag)}
 
 def calc_aft_re_dep(foil="0020"):
@@ -266,7 +269,7 @@ def calc_aft_re_dep(foil="0020"):
     for Re in Re_list:
         ctorque.append(calc_aft_ctorque(Re, foil))
     return np.asarray(ctorque)
-        
+
 def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
                     fmt="-ok"):
     d = calc_cft_re_dep(tsr, chord, R, foil)
@@ -274,7 +277,7 @@ def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
     max_cdrag = d["max_cdrag"]
     if newfig:
         plt.figure()
-    plt.plot(Re_list, max_ctorque/max_ctorque[5], fmt, 
+    plt.plot(Re_list, max_ctorque/max_ctorque[5], fmt,
              label="NACA {}".format(foil), markerfacecolor="none")
     plt.grid(True)
     ax = plt.gca()
@@ -282,18 +285,18 @@ def plot_cft_re_dep(tsr=1.9, chord=0.14, R=0.5, foil="0020", newfig=True,
     plt.xlabel(r"$Re_c$")
     plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
     plt.tight_layout()
-    
+
 def plot_aft_re_dep(foil="0020", fmt="-ok", newfig=True):
     ct = calc_aft_re_dep(foil)
     if newfig:
         plt.figure()
-    plt.plot(Re_list, ct/ct[5], fmt, label="NACA {}".format(foil), 
+    plt.plot(Re_list, ct/ct[5], fmt, label="NACA {}".format(foil),
              markerfacecolor="none")
     plt.grid(True)
     plt.xlabel(r"$Re_c$")
     plt.ylabel(r"$C_{T_\mathrm{max}}$ (normalized)")
     plt.tight_layout()
-    
+
 def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5, RVAT=True, save=False):
     plt.figure()
     if RVAT:
@@ -304,7 +307,7 @@ def plot_cft_re_dep_all(tsr=1.9, chord=0.14, R=0.5, RVAT=True, save=False):
     plt.legend(loc="best")
     if save:
         plt.savefig("figures/cft_re_dep_foils.pdf")
-    
+
 def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020", save=False):
     df = calc_cft_ctorque(Re, tsr, chord, R, foil)
     plt.figure(figsize=(7.5, 2.5))
@@ -329,7 +332,7 @@ def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020", save=False):
     plt.tight_layout(pad=0.2)
     if save:
         plt.savefig("figures/foil_kinematics_ct.pdf")
-    
+
 def plot_rvat_re_dep(newfig=False, normalize=True):
     if newfig:
         plt.figure()
@@ -339,20 +342,20 @@ def plot_rvat_re_dep(newfig=False, normalize=True):
     if normalize:
         cp /= cp[5]
     plt.plot(df.Re_c_ave, cp, "-ok", label="UNH-RVAT exp.", markerfacecolor="none")
-    
+
 def plot_all_foils_re_dep(save=False):
     plt.figure(figsize=(7.5, 2.65))
     plt.subplot(1, 3, 1)
-    plot_max_cl_all(newfig=False)
+    plot_max_cl_all(newfig=False, legend=True)
     plt.subplot(1, 3, 2)
-    plot_min_cd_all(newfig=False)
+    plot_min_cd_all(newfig=False, legend=False)
     plt.subplot(1, 3, 3)
-    plot_max_cl_cd_all(newfig=False)
+    plot_max_cl_cd_all(newfig=False, legend=False)
     plt.tight_layout(pad=0.2)
     if save:
         plt.savefig("figures/all_foils_re_dep.pdf")
     plt.show()
-    
+
 if __name__ == "__main__":
     if not os.path.isdir("figures"):
         os.mkdir("figures")
@@ -368,9 +371,9 @@ if __name__ == "__main__":
 #    plot_ct(1.1e5)
 #    plot_cl_cd(1.1e5)
 #    plot_ct_all("4520")
-    plot_cft_ctorque(2.1e5, foil=foil, save=save)
+    # plot_cft_ctorque(2.1e5, foil=foil, save=save)
 #    plot_cft_re_dep(foil=foil)
-    plot_cft_re_dep_all(save=save)
+    # plot_cft_re_dep_all(save=save)
 #    plot_min_cd_all()
 #    plot_max_cl_all()
 #    plot_max_cl_cd_all()
