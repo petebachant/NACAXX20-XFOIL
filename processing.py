@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This module contains functions for loading ands plotting data.
-
+This module contains functions for loading and plotting data.
 """
 
 import numpy as np
