@@ -1,9 +1,11 @@
+[![DOI](https://zenodo.org/badge/4234/petebachant/NACAXX20-XFOIL.svg)](https://zenodo.org/badge/latestdoi/4234/petebachant/NACAXX20-XFOIL)
+
 # NACA XX20 XFOIL coefficients
 
 NACA XX20 airfoil coefficients calculated with XFOIL via
 [QBlade](http://q-blade.org).
 
-Default solver settings were used for all runs. 
+Default solver settings were used for all runs.
 
 
 License
