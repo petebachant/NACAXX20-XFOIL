@@ -83,7 +83,7 @@ def plot_cl_cd_all(foil="0020"):
 
 def plot_max_cl(foil="0020", fmt="-o", normalize=False, newfig=True):
     max_cl = []
-    ylab = r"$C_{l, \mathrm{max}}$"
+    ylab = r"$C_{l_{\max}}$"
     for Re in Re_list:
         max_cl.append(load(Re, foil=foil)["cl"].max())
     if newfig:
@@ -108,7 +108,7 @@ def plot_max_cl_all(save=False, newfig=True, legend=True):
         plt.savefig("figures/foils_max_cl.pdf")
 
 def plot_min_cd(foil="0020", fmt="-o", newfig=True, normalize=False):
-    ylab = r"$C_{d, \mathrm{min}}$"
+    ylab = r"$C_{d_{\min}}$"
     min_cd = []
     for Re in Re_list:
         min_cd.append(load(Re, foil=foil)["cd"].min())
@@ -360,22 +360,22 @@ if __name__ == "__main__":
         os.mkdir("figures")
     foil = "0020"
     save = True
-#    plot_cl_all(foil)
-#    plt.legend()
-#    plot_cd_all(foil)
-#    plot_max_cl(foil)
-#    plot_min_cd(foil)
-#    plot_max_cl_cd(foil)
-#    plot_aoa_max_cl_cd()
-#    plot_ct(1.1e5)
-#    plot_cl_cd(1.1e5)
-#    plot_ct_all("4520")
+    # plot_cl_all(foil)
+    # plt.legend()
+    # plot_cd_all(foil)
+    # plot_max_cl(foil)
+    # plot_min_cd(foil)
+    # plot_max_cl_cd(foil)
+    # plot_aoa_max_cl_cd()
+    # plot_ct(1.1e5)
+    # plot_cl_cd(1.1e5)
+    # plot_ct_all("4520")
     # plot_cft_ctorque(2.1e5, foil=foil, save=save)
-#    plot_cft_re_dep(foil=foil)
+    # plot_cft_re_dep(foil=foil)
     # plot_cft_re_dep_all(save=save)
-#    plot_min_cd_all()
-#    plot_max_cl_all()
-#    plot_max_cl_cd_all()
+    # plot_min_cd_all()
+    # plot_max_cl_all()
+    # plot_max_cl_cd_all()
     plot_all_foils_re_dep(save=save)
-#    plot_aft_re_dep()
+    # plot_aft_re_dep()
     plt.show()
