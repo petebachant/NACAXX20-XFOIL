@@ -316,24 +316,24 @@ def plot_cft_ctorque(Re, tsr=1.9, chord=0.14, R=0.5, foil="0020", save=False):
     plt.plot(df.theta, df.alpha_deg)
     plt.xlabel("Azimuthal angle (deg.)")
     plt.ylabel("Angle of attack (deg.)")
-    plt.xticks(np.arange(0, 181, 30))
+    plt.xticks(np.arange(0, 181, 45))
     plt.grid(True)
     label_subplot(text="(a)")
     plt.subplot(1, 3, 2)
     plt.plot(df.theta, df.rel_vel_mag)
     plt.xlabel("Azimuthal angle (deg.)")
     plt.ylabel(r"$|U_{\mathrm{rel}}|/U_\infty$")
-    plt.xticks(np.arange(0, 181, 30))
+    plt.xticks(np.arange(0, 181, 45))
     plt.grid(True)
     label_subplot(text="(b)")
     plt.subplot(1, 3, 3)
     plt.plot(df.theta, df.ctorque)
     plt.xlabel("Azimuthal angle (deg.)")
     plt.ylabel("Torque coefficient")
-    plt.xticks(np.arange(0, 181, 30))
+    plt.xticks(np.arange(0, 181, 45))
     plt.grid(True)
     label_subplot(text="(c)")
-    plt.tight_layout(pad=0.2)
+    plt.tight_layout(w_pad=0.2)
     if save:
         plt.savefig("figures/foil_kinematics_ct.pdf")
 
@@ -360,13 +360,13 @@ def plot_all_foils_re_dep(save=False):
     plt.subplot(1, 3, 3)
     plot_max_cl_cd_all(newfig=False, legend=False)
     label_subplot(text="(c)")
-    plt.tight_layout(pad=0.2)
+    plt.tight_layout(w_pad=0.2)
     if save:
         plt.savefig("figures/all_foils_re_dep.pdf")
     plt.show()
 
 
-def label_subplot(ax=None, x=0.5, y=-0.28, text="(a)", **kwargs):
+def label_subplot(ax=None, x=0.5, y=-0.31, text="(a)", **kwargs):
     """Create a subplot label."""
     if ax is None:
         ax = plt.gca()
