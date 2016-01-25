@@ -380,6 +380,7 @@ if __name__ == "__main__":
     set_sns()
     foil = "0020"
     save = True
+    plt.rcParams["axes.formatter.use_mathtext"] = True
     # plot_cl_all(foil)
     # plt.legend()
     # plot_cd_all(foil)
