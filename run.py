@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 """This module contains functions for loading and plotting data."""
 
 import numpy as np
